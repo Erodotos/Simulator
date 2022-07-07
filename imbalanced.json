@@ -1,4 +1,3 @@
-
 {
     "experiment_id": "Simulation Imbalanced Stratified",
     "logging":  {
@@ -8,8 +7,8 @@
         "mix_log": "mix_log.json"},
     "phases":   {
         "burnin": 100,
-        "execution": 500,
-        "cooldown": 2000},
+        "execution": 100,
+        "cooldown": 100},
     "network": {
         "topology" : "stratified",
         "cascade" : {
@@ -35,12 +34,12 @@
         "min_msg_size": 2,
         "max_msg_size": 2},
     "mixnodes": {
-			"avg_delay": 0.1,
+                        "avg_delay": 0.1,
       "batch": false,
       "batch_size" : 1000,
-			"AQM":false},
+                        "AQM":false},
     "clients": {
-        "number":100,
+        "number":4000,
         "sim_add_buffer": 1.0,
         "rate_sending": 1.0,
         "rate_ack": 0.5,

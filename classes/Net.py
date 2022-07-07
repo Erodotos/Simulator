@@ -88,12 +88,16 @@ class Network(object):
                 layers_with_non_crashed_mixes = []
                 for L in self.topology["Layers"]:
                     non_crashed_mixes = []
-                    for mix in L:
-                        if random.random() > 0.4:   # this is not actually random. this is pseudo random
-                            non_crashed_mixes.append(mix)
+                    while True:
+                        for mix in L:
+                            if random.random() > 0.4:   # this is not actually random. this is pseudo random
+                                non_crashed_mixes.append(mix)
+                        if len(non_crashed_mixes) == 0:
+                            print("zero-sequence")
+                        else:
+                            break
 
                     layers_with_non_crashed_mixes.append(non_crashed_mixes)
-  
                 tmp_route = [random.choice(L) for L in layers_with_non_crashed_mixes]
             else:
                 tmp_route = [random.choice(L) for L in self.topology["Layers"]]

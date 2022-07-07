@@ -304,6 +304,7 @@ class Node(object):
             self.add_to_buffer(msg.pkts)
             self.env.message_ctr += 1
             i += 1
+            print(i)
         self.env.finished = True
 
 
