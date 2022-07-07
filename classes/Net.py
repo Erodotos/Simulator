@@ -9,7 +9,7 @@ import os
 
 class Network(object):
 
-    def __init__(self, env, type, conf, loggers):
+    def __init__(self, env, type, imbalanced, conf, loggers):
         self.env = env
         self.conf = conf
         self.topology = {}
@@ -29,6 +29,7 @@ class Network(object):
                 self.init_cascade()
             elif type == "stratified":
                 self.topology["Type"] = "stratified"
+                self.topology["imbalanced"] = imbalanced
                 num_mixnodes = int(self.conf["network"]["stratified"]["layers"]) * int(self.conf["network"]["stratified"]["layer_size"])
                 self.mixnodes = [Node(env, conf, self, id="M%s" % i, loggers = loggers) for i in range(num_mixnodes)]
                 self.init_stratified()
@@ -69,7 +70,33 @@ class Network(object):
         tmp_route = []
 
         if self.topology["Type"] == "stratified":
-            tmp_route = [random.choice(L) for L in self.topology["Layers"]]
+            if self.topology["imbalanced"] == True:
+                # First attempt
+                # tmp_route = []
+                # for L in self.topology["Layers"]:
+                #     random_mix = None
+                #     while True:
+                #         random_mix = random.choice(L)
+                #         rnd_prob = random.random()
+                #         if rnd_prob < 0.5:
+                #             continue
+                #         else:
+                #             tmp_route.append(random_mix)
+                #             break
+                # Second attempt
+                
+                layers_with_non_crashed_mixes = []
+                for L in self.topology["Layers"]:
+                    non_crashed_mixes = []
+                    for mix in L:
+                        if random.random() > 0.4:   # this is not actually random. this is pseudo random
+                            non_crashed_mixes.append(mix)
+
+                    layers_with_non_crashed_mixes.append(non_crashed_mixes)
+  
+                tmp_route = [random.choice(L) for L in layers_with_non_crashed_mixes]
+            else:
+                tmp_route = [random.choice(L) for L in self.topology["Layers"]]
         elif self.topology["Type"] == "cascade":
             tmp_route = self.topology["cascade"].copy()
         elif self.topology["Type"] == "multi_cascade":
@@ -77,6 +104,7 @@ class Network(object):
         elif self.topology["Type"] == "p2p":
             length = self.conf["network"]["p2p"]["path_length"]
             tmp_route = random.sample(self.peers, length)
+        
 
         return tmp_route
 

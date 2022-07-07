@@ -232,8 +232,9 @@ def run(exp_dir, conf_file=None, conf_dic=None):
 
     # Create the network
     type = conf["network"]["topology"]
+    imbalanced = conf["network"]["stratified"]["imbalanced"]
     loggers = get_loggers(log_dir, conf)
-    net = Network(env, type, conf, loggers)
+    net = Network(env, type, imbalanced, conf, loggers)
 
     if type == "p2p":
         run_p2p(env, conf, net, loggers)

@@ -13,7 +13,7 @@ if __name__ == "__main__":
 	print("Mix-network Simulator\n")
 	print("Insert the following network parameters to test: ")
 
-	with open('test_config.json') as json_file:
+	with open('test_config_imbalanced.json') as json_file:
 		config = json.load(json_file)
 
 	if not os.path.exists('./playground_experiment/logs'):
