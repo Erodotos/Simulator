@@ -30,9 +30,11 @@ class Network(object):
             elif type == "stratified":
                 self.topology["Type"] = "stratified"
                 self.topology["imbalanced"] = imbalanced
-                num_mixnodes = int(self.conf["network"]["stratified"]["layers"]) * int(self.conf["network"]["stratified"]["layer_size"])
+                # num_mixnodes = int(self.conf["network"]["stratified"]["layers"]) * int(self.conf["network"]["stratified"]["layer_size"])
+                num_mixnodes = 25
                 self.mixnodes = [Node(env, conf, self, id="M%s" % i, loggers = loggers) for i in range(num_mixnodes)]
-                self.init_stratified()
+                # self.init_stratified()
+                self.init_stratified_imbalanced_2_1_2()
             elif type == "multi_cascade":
                 self.topology["Type"] = "multi_cascade"
                 num_mixnodes = int(self.conf["network"]["multi_cascade"]["cascade_len"]) * int(self.conf["network"]["multi_cascade"]["num_cascades"])
@@ -65,6 +67,26 @@ class Network(object):
         for i in range(0, num_layers - 1):
             for j in range(0, mixes_per_layer):
                 self.topology[self.mixnodes[i * mixes_per_layer + j]] = layers[i + 1]
+
+    def init_stratified_imbalanced_2_1_2(self):
+        num_layers = int(self.conf["network"]["stratified"]["layers"])
+
+        mixes_per_layer = [10,5,10]
+
+        layers = []
+        
+        i = 0
+        for ml in mixes_per_layer:
+            tmp_layers = self.mixnodes[i:(i + ml)]
+            layers.append(tmp_layers)
+            i = i + ml
+        self.topology["Layers"] =  layers
+
+        
+        for i in range (0,len(layers)-1):
+            for mix in layers[i]:
+                self.topology[mix] = layers[i + 1] 
+  
 
     def select_random_route(self):
         tmp_route = []
